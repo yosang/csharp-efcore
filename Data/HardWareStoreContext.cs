@@ -47,9 +47,16 @@ public class HardwareStoreContext : DbContext
             e.Property(e => e.Name).IsRequired();
             e.Property(e => e.Price).IsRequired();
 
+            // Here we are explicitly making this a one-to-many relationship
             // Tool has one brand
             // Brand has many tools
-            e.HasOne(e => e.Brand).WithMany(e => e.Tools); // Here we are explicitly making this a one-to-many relationship
+            e.HasOne(e => e.Brand)
+            .WithMany(e => e.Tools)
+            .HasForeignKey(e => e.BrandID);
+
+            e.HasOne(e => e.Category)
+            .WithMany(e => e.Tools)
+            .HasForeignKey(e => e.CategoryID);
         });
 
         modelBuilder.Entity<Category>(e =>
