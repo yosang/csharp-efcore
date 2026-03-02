@@ -17,6 +17,7 @@ public class HardwareStoreContext : DbContext
 {
     public DbSet<Tool> Tools { get; set; }
     public DbSet<Brand> Brands { get; set; }
+    public DbSet<Category> Categories { get; set; }
 
     // Connction configuration
     // This method is called for each instnace of HardwareStoreContext, and configures the database
@@ -49,6 +50,12 @@ public class HardwareStoreContext : DbContext
             // Tool has one brand
             // Brand has many tools
             e.HasOne(e => e.Brand).WithMany(e => e.Tools); // Here we are explicitly making this a one-to-many relationship
+        });
+
+        modelBuilder.Entity<Category>(e =>
+        {
+            e.HasKey(e => e.ID);
+            e.Property(e => e.Name).IsRequired();
         });
     }
 }

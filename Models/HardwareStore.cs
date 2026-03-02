@@ -9,6 +9,7 @@ public class Tool
     public string Name { get; set; } = string.Empty;
     public double Price { get; set; }
     public virtual Brand? Brand { get; set; } // This is the foreign key attribute
+    public virtual Category? Category { get; set; }
 }
 public class Brand
 {
@@ -16,5 +17,13 @@ public class Brand
     public string Name { get; set; } = string.Empty;
 
     public virtual List<Tool>? Tools { get; set; } // This is a navigation property, it allows us to browse from brand to all its tools
+}
+
+public class Category
+{
+    public int ID { get; set; }
+    public string Name { get; set; } = string.Empty;
+
+    public virtual List<Tool>? Tools { get; set; }
 }
 
