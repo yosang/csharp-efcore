@@ -35,10 +35,38 @@ public class HardwareStoreContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        // Initial data seeds
+        List<Brand> brands = new()
+        {
+            new Brand() { ID = 1, Name = "Bosch"},
+            new Brand() { ID = 2, Name = "Samsung"}
+        };
+
+        List<Category> categories = new()
+        {
+          new Category() { ID = 1, Name = "Hand Tool"},
+          new Category() { ID = 2, Name = "Power Tool"},
+        };
+
+        List<Tool> tools = new()
+        {
+         new Tool() { ID=Guid.NewGuid().ToString(), Name = "Hammer", Price = 99.9, BrandID = 1, CategoryID = 1},
+            new Tool() { ID=Guid.NewGuid().ToString(), Name = "Drill", Price = 99.9, BrandID = 1, CategoryID = 2},
+        };
+
+        // Entity Configuration
         modelBuilder.Entity<Brand>(e =>
         {
             e.HasKey(e => e.ID); // Here we are explictly requiring the brand entity to have an id (PK)
-            e.Property(e => e.Name).IsRequired(); // We want Brand to have a name, so this property is required
+            e.Property(e => e.Name).IsRequired(); // A Brand name must be set
+            e.HasData(brands); // Seeds the Brands table
+        });
+
+        modelBuilder.Entity<Category>(e =>
+        {
+            e.HasKey(e => e.ID);
+            e.Property(e => e.Name).IsRequired();
+            e.HasData(categories);
         });
 
         modelBuilder.Entity<Tool>(e =>
@@ -48,21 +76,18 @@ public class HardwareStoreContext : DbContext
             e.Property(e => e.Price).IsRequired();
 
             // Here we are explicitly making this a one-to-many relationship
-            // Tool has one brand
-            // Brand has many tools
-            e.HasOne(e => e.Brand)
-            .WithMany(e => e.Tools)
-            .HasForeignKey(e => e.BrandID);
+            e.HasOne(e => e.Brand) // Tool belongs to one Brand
+            .WithMany(e => e.Tools) // Brands can have many Tools
+            .HasForeignKey(e => e.BrandID); // Specifies which key we want to use as Foreign Key
 
             e.HasOne(e => e.Category)
             .WithMany(e => e.Tools)
             .HasForeignKey(e => e.CategoryID);
+
+            e.HasData(tools); // Finally seed the tools, they must be seeded last because Brands and Categories must exist first (Tools depend on foreign keys)
+
         });
 
-        modelBuilder.Entity<Category>(e =>
-        {
-            e.HasKey(e => e.ID);
-            e.Property(e => e.Name).IsRequired();
-        });
+
     }
 }

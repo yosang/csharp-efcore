@@ -1,28 +1,19 @@
-﻿using System.Text;
-using EFCoreDemo.Data;
+﻿using EFCoreDemo.Data;
 using EFCoreDemo.Models;
-using EFCoreDemo.Repository;
-using Microsoft.EntityFrameworkCore;
 public class Program
 {
     public static void Main()
     {
-        using var db = new HardwareStoreContext();
-        db.Database.EnsureCreated();
+        using var db = new HardwareStoreContext(); // Once we create a new instance of DbContext, everything should be configured
 
-        BrandRepository brandRepo = new BrandRepository(db);
-        CategoryRepository categoryRepo = new CategoryRepository(db);
-        ToolRepository toolRepo = new ToolRepository(db);
+        db.Database.EnsureCreated(); // EFCore ensures tables are created if the database is empty of tables
 
-        brandRepo.seedDefaultBrands();
-        categoryRepo.seedDefaultCategories();
-
-        toolRepo.addTools(new List<Tool>()
+        foreach (Brand b in db.Brands)
         {
-            new Tool() { ID=Guid.NewGuid().ToString(), Name = "Hammer", Price = 99.9, BrandID = 1, CategoryID = 1},
-            new Tool() { ID=Guid.NewGuid().ToString(), Name = "Drill", Price = 99.9, BrandID = 1, CategoryID = 2},
-        });
-
+            Console.WriteLine(b.ID);
+            Console.WriteLine(b.Name);
+            Console.WriteLine(b.Tools);
+        }
     }
 
 }
