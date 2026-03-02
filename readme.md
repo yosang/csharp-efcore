@@ -4,6 +4,13 @@ This practice-project demonstrates how we can configure `Entity Framework Core` 
 
 This project is built using the NuGet package: `MySql.EntityFrameworkCore`.
 
+**Database Prerequisites**
+- This project assumes you have a `MySQL` server instance running.
+- Create a database named `testdb`.
+- Create a user named `testuser` identified by password `p@ssword`.
+- Grant `testuser` the necessary permissions on `testdb`.
+- If you prefer to use an existing db and user, feel free to change the connection strig on line 27 in [HardWareStoreContext](Data/HardWareStoreContext.cs)
+
 # Usage
 
 1. Clone the repo
