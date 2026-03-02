@@ -12,7 +12,6 @@ public class Program
         {
             Console.WriteLine(b.ID);
             Console.WriteLine(b.Name);
-            Console.WriteLine(b.Tools);
         }
     }
 
