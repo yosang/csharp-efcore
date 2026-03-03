@@ -19,12 +19,14 @@ public class HardwareStoreContext : DbContext
     public DbSet<Brand> Brands { get; set; }
     public DbSet<Category> Categories { get; set; }
 
-    // Connction configuration
+    // Connction configurationa
     // This method is called for each instnace of HardwareStoreContext, and configures the database
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         // Provides connection details for a MySQL server
         optionsBuilder.UseMySQL("server=localhost;database=testdb;user=testuser;password=p@ssword");
+
+        // optionsBuilder.LogTo(Console.WriteLine); // Enables logging
     }
 
     // Allows us to furhter configure the models with specific constraints such as:
