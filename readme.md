@@ -2,9 +2,16 @@
 
 This practice-project demonstrates how we can configure `Entity Framework Core` with `.NET 9` to connect to a `MySQL` database and perform some basic `CRUD` operations.
 
-This project is built using the NuGet package: `MySql.EntityFrameworkCore`.
+## Approach
+In this project we are using the `Code-First` approach:
+- Entitites are created in code first.
+- Database is generated through migrations.
 
-**Database Prerequisites**
+## Packages
+- `MySql.EntityFrameworkCore`
+- `Microsoft.EntityFrameworkCore.Design`.
+
+## Database Prerequisites
 - This project assumes you have a `MySQL` server instance running.
 - Create a database named `testdb`.
 - Create a user:
@@ -12,7 +19,6 @@ This project is built using the NuGet package: `MySql.EntityFrameworkCore`.
     CREATE USER 'testuser'@'localhost' IDENTIFIED BY 'p@ssword';
     GRANT ALL PRIVILEGES ON testdb.* TO 'testuser'@'localhost';
     ```
-
 # Concepts covered
 
 ## Overview
@@ -147,14 +153,16 @@ In short, the repository pattern acts as an abstraction layer between the applic
 # Usage
 
 1. Clone the repo
-2. Install the necessary `Microsoft.EntityFrameworkCore` package files with `dotnet restore`.
-3. Run it with `dotnet run`
+2. Install the necessary package files with `dotnet restore`.
+4. To apply the migrations use `dotnet ef database update`
+4. Run the application with `dotnet run`
 
 # Technologies
 
 - .NET 9
 - Entity Framework Core 9
 - MySql.EntityFrameworkCore
+- Microsoft.EntityFrameworkCore.Design
 - Repository Pattern + Dependency Injection
 
 # Author
