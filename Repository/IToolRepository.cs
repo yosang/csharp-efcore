@@ -4,6 +4,7 @@ namespace EFCoreDemo.Repository;
 
 public interface IToolRepository
 {
+    #region CRUD methods
     // Here we define the CRUD capabilities of our repository
     // Must be implemented by the repository class
 
@@ -23,4 +24,26 @@ public interface IToolRepository
     void DeleteTool(Tool tool);
     void DeleteToolById(int id);
     void DeleteTools(List<Tool> tools);
+
+    #endregion
+
+    #region Linq methods
+
+    // Filters
+    List<Tool> GetToolsCheaperThan(double price);
+    List<Tool> GetToolsByPriceRange(double min, double max);
+    List<Tool> SearchToolsByName(string pattern); // Partial search
+
+    // Sorting
+    List<Tool> GetAllToolsByPriceSorted(bool descending = false);
+    List<Tool> GetToolsForBrandSorted(int brandId, string sortBy = "Name");
+
+    // Projection
+    double GetAveragePriceForCategory(int categoryId);
+
+    // Aggregates
+    int CountToolsInCategory(int categoryId);
+    Tool? GetMostExpensiveTool();
+
+    #endregion
 }

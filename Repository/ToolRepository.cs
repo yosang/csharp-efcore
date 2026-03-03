@@ -12,6 +12,8 @@ public class ToolRepository : IToolRepository
         _db = db;
     }
 
+    #region CRUD Methods
+
     // SQL Query equivalent: INSERT INTO Tools (...) VALUES (...)
     public void AddTool(Tool tool)
     {
@@ -110,4 +112,95 @@ public class ToolRepository : IToolRepository
         _db.RemoveRange(tools);
         _db.SaveChanges();
     }
+
+    #endregion
+
+    #region LINQ methods
+    // Filters
+    public List<Tool> GetToolsCheaperThan(double price)
+    {
+        if (_db == null) return new List<Tool>();
+
+        return _db.Tools
+                .Where(t => t.Price < price) // Filte rby price lower than price
+                .OrderBy(t => t.Price) // Order by the price column
+                .ToList(); // Convert to a list
+    }
+    public List<Tool> GetToolsByPriceRange(double min, double max)
+    {
+        if (_db == null) return new List<Tool>();
+        return _db.Tools
+                .Where(t => t.Price < max && t.Price > min)
+                .OrderBy(t => t.Price)
+                .ToList();
+    }
+    public List<Tool> SearchToolsByName(string pattern) // Partial search
+    {
+        if (_db == null || string.IsNullOrWhiteSpace(pattern)) return new List<Tool>();
+
+        pattern = pattern.Trim().ToLower(); // Trim any potential spaces and make it case insensitive
+
+        return _db.Tools
+                .Where(t => EF.Functions.Like(t.Name.ToLower(), $"%{pattern}%")) // Similar to SQL LIKE = %..% - where the pattern can be in the middle
+                .OrderBy(t => t.Price) // Order by price
+                .ToList();
+    }
+
+    // Sorting
+
+    public List<Tool> GetAllToolsByPriceSorted(bool descending = false)
+    {
+        if (_db == null) return new List<Tool>();
+
+        var result = descending ? _db.Tools.OrderByDescending(t => t.Price).ToList() : _db.Tools.OrderBy(t => t.Price).ToList();
+
+        return result;
+    }
+    public List<Tool> GetToolsForBrandSorted(int brandId, string sortBy = "Name")
+    {
+        if (_db == null) return new List<Tool>();
+
+        var result = _db.Tools
+                      .Include(t => t.Brand)
+                      .Where(t => t.BrandID == brandId);
+
+        // Here we can apply based on string passed
+        result = sortBy?.Trim().ToLower() switch
+        {
+            "price" => result.OrderBy(t => t.Price),
+            "price desc" => result.OrderByDescending(t => t.Price),
+            "name desc" => result.OrderByDescending(t => t.Name),
+            _ => result.OrderBy(t => t.Name)
+        };
+
+        return result.ToList();
+    }
+    // Projection
+
+    public double GetAveragePriceForCategory(int categoryId)
+    {
+        if (_db == null) return 0;
+
+        return _db.Tools
+                .Where(t => t.CategoryID == categoryId) // First we join the tables
+                .Average(t => t.Price); // Then we find the average price
+    }
+
+    // Aggregates
+    public int CountToolsInCategory(int categoryId)
+    {
+        if (_db == null) return 0;
+        return _db.Tools
+                .Where(t => t.CategoryID == categoryId)
+                .Count();
+    }
+    public Tool? GetMostExpensiveTool()
+    {
+        if (_db == null) return null;
+
+        return _db.Tools
+                .OrderByDescending(t => t.Price)
+                .FirstOrDefault();
+    }
+    #endregion
 }
